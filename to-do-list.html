@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List with Save</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      input {
+        padding: 10px;
+        width: 70%;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-left: 10px;
+      }
+
+      ul {
+        margin-top: 20px;
+        padding: 0;
+      }
+
+      li {
+        background-color: white;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+        list-style: none;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .hapus-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>To-Do List</h1>
+
+    <input type="text" id="tugas" placeholder="Tulis tugasmu di sini">
+    <button onclick="tambahTugas()">Tambah</button>
+
+    <ul id="daftarTugas"></ul>
+
+    <script>
+      // Ambil data dari localStorage saat halaman dibuka
+      window.onload = function () {
+        const dataTersimpan = localStorage.getItem("todoList");
+        if (dataTersimpan) {
+          const listTugas = JSON.parse(dataTersimpan);
+          listTugas.forEach((tugas) => buatItem(tugas));
+        }
+      };
+
+      function tambahTugas() {
+        var tugas = document.getElementById("tugas").value;
+
+        if (tugas === "") {
+          alert("Tugas tidak boleh kosong!");
+          return;
+        }
+
+        buatItem(tugas);
+        simpanList();
+        document.getElementById("tugas").value = "";
+      }
+
+      function buatItem(teks) {
+        var li = document.createElement("li");
+        li.innerText = teks;
+
+        var hapusBtn = document.createElement("button");
+        hapusBtn.innerText = "Hapus";
+        hapusBtn.className = "hapus-btn";
+
+        hapusBtn.onclick = function () {
+          li.remove();
+          simpanList();
+        };
+
+        li.appendChild(hapusBtn);
+        document.getElementById("daftarTugas").appendChild(li);
+      }
+
+      function simpanList() {
+        const items = document.querySelectorAll("#daftarTugas li");
+        const listBaru = [];
+
+        items.forEach((item) => {
+          // Ambil teks sebelum tombol "Hapus"
+          const teks = item.firstChild.textContent;
+          listBaru.push(teks.trim());
+        });
+
+        localStorage.setItem("todoList", JSON.stringify(listBaru));
+      }
+    </script>
+
+  </body>
+</html>
