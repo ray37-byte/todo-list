@@ -66,7 +66,6 @@
     <ul id="daftarTugas"></ul>
 
     <script>
-      // Ambil data dari localStorage saat halaman dibuka
       window.onload = function () {
         const dataTersimpan = localStorage.getItem("todoList");
         if (dataTersimpan) {
@@ -110,12 +109,13 @@
         const listBaru = [];
 
         items.forEach((item) => {
-      
-            // Ambil teks sebelum tombol hapus
+          const teks = item.firstChild.textContent;
+          listBaru.push(teks.trim());
+        });
+
+        localStorage.setItem("todoList", JSON.stringify(listBaru));
+      }
     </script>
     
   </body>
 </html>
-  
-  
-
