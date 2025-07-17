@@ -54,6 +54,10 @@
         border-radius: 3px;
         cursor: pointer;
       }
+      .selesai {
+       text-decoration: line-through;
+       color: gray;
+      }
     </style>
   </head>
   <body>
@@ -67,10 +71,29 @@
 
     <script>
       window.onload = function () {
-        const dataTersimpan = localStorage.getItem("todoList");
-        if (dataTersimpan) {
-          const listTugas = JSON.parse(dataTersimpan);
-          listTugas.forEach((tugas) => buatItem(tugas));
+  const data = JSON.parse(localStorage.getItem("todoList")) || [];
+  data.forEach(todo => {
+    const li = document.createElement("li");
+    li.textContent = todo.text;
+    if (todo.selesai) {
+      li.classList.add("selesai");
+    }
+    li.addEventListener("click", function () {
+      li.classList.toggle("selesai");
+      simpanList();
+    });
+
+    const tombolHapus = document.createElement("button");
+    tombolHapus.textContent = "Hapus";
+    tombolHapus.addEventListener("click", function () {
+      li.remove();
+      simpanList();
+    });
+
+    li.appendChild(tombolHapus);
+    daftarTodo.appendChild(li);
+  });
+};
         }
       };
 
@@ -97,7 +120,16 @@
 
         hapusBtn.onclick = function () {
           li.remove();
-          simpanList();
+          simpanList();function simpanList() {
+  const todos = [];
+  document.querySelectorAll("li").forEach(li => {
+    todos.push({
+      text: li.firstChild.textContent,
+      selesai: li.classList.contains("selesai")
+    });
+  });
+  localStorage.setItem("todoList", JSON.stringify(todos));
+      }
         };
 
         li.appendChild(hapusBtn);
@@ -114,7 +146,11 @@
         });
 
         localStorage.setItem("todoList", JSON.stringify(listBaru));
-      }
+        li.addEventListener("click", function () {
+        li.classList.toggle("selesai");
+        simpanList(); // simpan status selesai juga
+        });
+    
     </script>
     
   </body>
