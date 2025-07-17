@@ -1,157 +1,110 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>To-Do List with Save</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        padding: 20px;
-        background-color: #f5f5f5;
-      }
-
-      h1 {
-        text-align: center;
-      }
-
-      input {
-        padding: 10px;
-        width: 70%;
-        font-size: 16px;
-      }
-
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: green;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        margin-left: 10px;
-      }
-
-      ul {
-        margin-top: 20px;
-        padding: 0;
-      }
-
-      li {
-        background-color: white;
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        list-style: none;
-        box-shadow: 0 0 5px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .hapus-btn {
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      .selesai {
-       text-decoration: line-through;
-       color: gray;
-      }
-    </style>
-  </head>
-  <body>
-
-    <h1>To-Do List</h1>
-
-    <input type="text" id="tugas" placeholder="Tulis tugasmu di sini">
-    <button onclick="tambahTugas()">Tambah</button>
-
-    <ul id="daftarTugas"></ul>
-
-    <script>
-      window.onload = function () {
-  const data = JSON.parse(localStorage.getItem("todoList")) || [];
-  data.forEach(todo => {
-    const li = document.createElement("li");
-    li.textContent = todo.text;
-    if (todo.selesai) {
-      li.classList.add("selesai");
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List Tuan Ray</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
     }
-    li.addEventListener("click", function () {
-      li.classList.toggle("selesai");
-      simpanList();
-    });
 
-    const tombolHapus = document.createElement("button");
-    tombolHapus.textContent = "Hapus";
-    tombolHapus.addEventListener("click", function () {
-      li.remove();
-      simpanList();
-    });
+    input[type="text"] {
+      padding: 10px;
+      width: 200px;
+    }
 
-    li.appendChild(tombolHapus);
-    daftarTodo.appendChild(li);
-  });
-};
-        }
-      };
+    button {
+      padding: 10px;
+      margin-left: 5px;
+    }
 
-      function tambahTugas() {
-        var tugas = document.getElementById("tugas").value;
+    li {
+      margin: 10px 0;
+      list-style: none;
+      cursor: pointer;
+    }
 
-        if (tugas === "") {
-          alert("Tugas tidak boleh kosong!");
-          return;
-        }
+    .selesai {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <h2>To-Do List Tuan Ray 👑</h2>
+  <input type="text" id="inputTodo" placeholder="Tugas baru...">
+  <button onclick="tambahTodo()">Tambah</button>
+  <ul id="daftarTodo"></ul>
 
-        buatItem(tugas);
-        simpanList();
-        document.getElementById("tugas").value = "";
-      }
+  <script>
+    const inputTodo = document.getElementById("inputTodo");
+    const daftarTodo = document.getElementById("daftarTodo");
 
-      function buatItem(teks) {
-        var li = document.createElement("li");
-        li.innerText = teks;
-
-        var hapusBtn = document.createElement("button");
-        hapusBtn.innerText = "Hapus";
-        hapusBtn.className = "hapus-btn";
-
-        hapusBtn.onclick = function () {
-          li.remove();
-          simpanList();function simpanList() {
-  const todos = [];
-  document.querySelectorAll("li").forEach(li => {
-    todos.push({
-      text: li.firstChild.textContent,
-      selesai: li.classList.contains("selesai")
-    });
-  });
-  localStorage.setItem("todoList", JSON.stringify(todos));
-      }
-        };
-
-        li.appendChild(hapusBtn);
-        document.getElementById("daftarTugas").appendChild(li);
-      }
-
-      function simpanList() {
-        const items = document.querySelectorAll("#daftarTugas li");
-        const listBaru = [];
-
-        items.forEach((item) => {
-          const teks = item.firstChild.textContent;
-          listBaru.push(teks.trim());
+    function simpanList() {
+      const todos = [];
+      daftarTodo.querySelectorAll("li").forEach(li => {
+        todos.push({
+          text: li.firstChild.textContent,
+          selesai: li.classList.contains("selesai")
         });
+      });
+      localStorage.setItem("todoList", JSON.stringify(todos));
+    }
 
-        localStorage.setItem("todoList", JSON.stringify(listBaru));
-        li.addEventListener("click", function () {
+    function tambahTodo() {
+      const teks = inputTodo.value.trim();
+      if (teks === "") return;
+
+      const li = document.createElement("li");
+      li.textContent = teks;
+
+      li.addEventListener("click", () => {
         li.classList.toggle("selesai");
-        simpanList(); // simpan status selesai juga
+        simpanList();
+      });
+
+      const tombolHapus = document.createElement("button");
+      tombolHapus.textContent = "Hapus";
+      tombolHapus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        li.remove();
+        simpanList();
+      });
+
+      li.appendChild(tombolHapus);
+      daftarTodo.appendChild(li);
+      inputTodo.value = "";
+      simpanList();
+    }
+
+    window.onload = function () {
+      const data = JSON.parse(localStorage.getItem("todoList")) || [];
+      data.forEach(todo => {
+        const li = document.createElement("li");
+        li.textContent = todo.text;
+
+        if (todo.selesai) {
+          li.classList.add("selesai");
+        }
+
+        li.addEventListener("click", () => {
+          li.classList.toggle("selesai");
+          simpanList();
         });
-    
-    </script>
-    
-  </body>
+
+        const tombolHapus = document.createElement("button");
+        tombolHapus.textContent = "Hapus";
+        tombolHapus.addEventListener("click", (e) => {
+          e.stopPropagation();
+          li.remove();
+          simpanList();
+        });
+
+        li.appendChild(tombolHapus);
+        daftarTodo.appendChild(li);
+      });
+    };
+  </script>
+</body>
 </html>
